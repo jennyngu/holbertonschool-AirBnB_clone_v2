@@ -1,7 +1,4 @@
 <<<<<<< HEAD
-<h1></h1>
-<h2>By bigBadMatt</h2>
-Repo of projects directly relating to , produced for assesment purposes for Holberton School
 =======
 <center> <h1>HBNB - The Console</h1> </center>
 
