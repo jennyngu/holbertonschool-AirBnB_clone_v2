@@ -43,8 +43,10 @@ class BaseModel:
         """
         Returns a string representation of the instance
         """
-        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+        classname = self.__class__.__name__
+        d = self.__dict__.copy()
+        d.pop('_sa_instance_state', None)
+        return "[{}] ({}) {}".format(classname, self.id, d)
 
     def save(self):
         """
@@ -58,14 +60,12 @@ class BaseModel:
         """
         Convert instance into dict format
         """
-        dictionary = self.__dict__.copy()
-        if '_sa_instance_state' in dictionary:
-            del dictionary['_sa_instance_state']
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
-        dictionary['created_at'] = self.created_at.isoformat()
-        dictionary['updated_at'] = self.updated_at.isoformat()
-        return dictionary
+        d = self.__dict__.copy()
+        d.pop('_sa_instance_state', None)
+        d["__class__"] = self.__class__.__name__
+        d["created_at"] = self.created_at.isoformat()
+        d["updated_at"] = self.updated_at.isoformat()
+        return d
 
     def delete(self):
         """
