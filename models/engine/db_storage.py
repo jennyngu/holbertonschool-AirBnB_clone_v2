@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-"""
-This module defines the DBStorage class.
-"""
+"""This module defines a database storage engine"""
 
 import os
 from sqlalchemy import create_engine
@@ -10,56 +8,64 @@ from models.base_model import BaseModel, Base
 
 
 class DBStorage:
-    """This class manages storage of hbnb models in a MySQL database."""
+    """The engine that handles the database storage"""
 
     __engine = None
     __session = None
 
     def __init__(self):
-        """Create a new instance of DBStorage."""
+        """Creates the engine instance and starts the session"""
         user = os.environ.get('HBNB_MYSQL_USER')
-        password = os.environ.get('HBNB_MYSQL_PWD')
+        pwd = os.environ.get('HBNB_MYSQL_PWD')
         host = os.environ.get('HBNB_MYSQL_HOST')
         db = os.environ.get('HBNB_MYSQL_DB')
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.
-                                      format(user, password, host, db),
+
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
+                                      .format(user, pwd, host, db),
                                       pool_pre_ping=True)
+
         if os.environ.get('HBNB_ENV') == 'test':
             Base.metadata.drop_all(bind=self.__engine)
 
+        Base.metadata.create_all(bind=self.__engine)
+
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
+        self.__session = scoped_session(session_factory)
+
     def all(self, cls=None):
-        """
-        Query on the current database session (self.__session) all objects
-        depending of the class name (argument cls).
-        If cls=None, query all types of objects (User, State, City, Amenity,
-        Place and Review).
-        Return:
-            Returns a dictionary of all objects in the database of a
-            certain class, or all classes if no class is passed.
-        """
-        if cls is not None:
-            objs = self.__session.query(cls).all()
+        """Returns a dictionary of all objects of a certain class"""
+        objs = {}
+
+        if cls is None:
+            classes = [BaseModel, State, City, Amenity, Place, Review]
         else:
-            objs = []
-            for c in Base.__subclasses__():
-                objs += self.__session.query(c).all()
-        return {'{}.{}'.format(type(obj).__name__, obj.id): obj for obj in objs}
+            classes = [cls]
+
+        for c in classes:
+            for obj in self.__session.query(c).all():
+                key = '{}.{}'.format(obj.__class__.__name__, obj.id)
+                objs[key] = obj
+
+        return objs
 
     def new(self, obj):
-        """Add obj to the current database session."""
+        """Adds an object to the current database session"""
         self.__session.add(obj)
 
     def save(self):
-        """Commit all changes to the current database session."""
+        """Commits all changes of the current database session"""
         self.__session.commit()
 
     def delete(self, obj=None):
-        """Delete obj from the current database session."""
+        """Deletes an object from the current database session"""
         if obj is not None:
             self.__session.delete(obj)
 
     def reload(self):
-        """Create all tables in the database."""
-        Base.metadata.create_all(self.__engine)
+        """Creates all tables in the database"""
+        Base.metadata.create_all(bind=self.__engine)
         self.__session = scoped_session(sessionmaker(bind=self.__engine,
-                                                     expire_on_commit=False))()
+                                                      expire_on_commit=False))
+
+
