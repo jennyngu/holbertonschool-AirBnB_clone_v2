@@ -5,7 +5,8 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models.base_model import BaseModel, Base
-
+from models.state import State
+from models.city import City
 
 class DBStorage:
     """The engine that handles the database storage"""
@@ -38,7 +39,7 @@ class DBStorage:
         objs = {}
 
         if cls is None:
-            classes = [BaseModel, State, City, Amenity, Place, Review]
+            classes = [BaseModel, State, City]  # Add the new classes here
         else:
             classes = [cls]
 
@@ -67,5 +68,4 @@ class DBStorage:
         Base.metadata.create_all(bind=self.__engine)
         self.__session = scoped_session(sessionmaker(bind=self.__engine,
                                                       expire_on_commit=False))
-
 
