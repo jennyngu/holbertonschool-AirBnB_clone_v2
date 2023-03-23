@@ -8,6 +8,7 @@ from models.base_model import BaseModel, Base
 from models.state import State
 from models.city import City
 
+
 class DBStorage:
     """The engine that handles the database storage"""
 
@@ -67,5 +68,4 @@ class DBStorage:
         """Creates all tables in the database"""
         Base.metadata.create_all(bind=self.__engine)
         self.__session = scoped_session(sessionmaker(bind=self.__engine,
-                                                      expire_on_commit=False))
-
+                                                     expire_on_commit=False))

@@ -33,9 +33,9 @@ class BaseModel:
                 if k != '__class__':
                     setattr(self, k, v)
             self.created_at = datetime.strptime(self.created_at,
-                                                 '%Y-%m-%dT%H:%M:%S.%f')
+                                                '%Y-%m-%dT%H:%M:%S.%f')
             self.updated_at = datetime.strptime(self.updated_at,
-                                                 '%Y-%m-%dT%H:%M:%S.%f')
+                                                '%Y-%m-%dT%H:%M:%S.%f')
             if not hasattr(self, 'id'):
                 self.id = str(uuid.uuid4())
 
@@ -73,4 +73,3 @@ class BaseModel:
         """
         from models import storage
         storage.delete(self)
-
