@@ -12,8 +12,3 @@ class User(BaseModel, Base):
     first_name = Column(String(128), nullable=True)
     last_name = Column(String(128), nullable=True)
 
-    def __init__(self, *args, **kwargs):
-        """
-        Initialize a new User.
-        """
-        super().__init__(*args, **kwargs)
