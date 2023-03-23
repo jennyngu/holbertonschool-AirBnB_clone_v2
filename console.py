@@ -3,7 +3,7 @@
 import cmd
 import sys
 from models.base_model import BaseModel
-from models.__init__ import storage
+from models import storage
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -139,14 +139,14 @@ class HBNBCommand(cmd.Cmd):
                 key, value = param.split('=', 1)
 
                 if value.startswith('"') and value.endswith('"'):
-                    value = value.replace('_', ' ')
+                    value = value[1:-1].replace('_', ' ')
                 else:
                     try:
                         value = int(value)
                     except ValueError:
                         try:
                             value = float(value)
-                        except:
+                        except Exception:
                             continue
 
                 setattr(new_instance, key, value)
@@ -154,7 +154,6 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
         print(new_instance.id)
         storage.save()
-
 
     def help_create(self):
         """ Help information for the create method """
@@ -236,11 +235,13 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+
+            objects = storage.all(HBNBCommand.classes[args])
+            for k, v in objects.items():
+                print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            objects = storage.all()
+            for k, v in objects.items():
                 print_list.append(str(v))
 
         print(print_list)
