@@ -21,7 +21,6 @@ class Place(BaseModel, Base):
     longitude = Column(Float, nullable=True)
     reviews = relationship("Review", backref="place", cascade="delete")
 
-
     if getenv("HBNB_TYPE_STORAGE", None) != "db":
         @property
         def reviews(self):
