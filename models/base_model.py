@@ -23,28 +23,7 @@ class BaseModel:
         """
         Instantiates a new model
         """
-
-        self.id=str(uuid.uuid4())
-        self.created_at = datetime.utcnow()
-        self.updated_at = datetime.utcnow()
-
-        if kwargs:
-            for key, value in kwargs.items():
-                if key != '__class__':
-                    setattr(self, key, value)
-                if value == "created_at":
-                    self.created_at = datetime.strptime(self.created_at,
-                                                 '%Y-%m-%dT%H:%M:%S.%f')
-                    kwargs[key] = self.created_at
-                if value == "updated_at":
-                    self.updated_at = datetime.strptime(self.updated_at,
-                                                 '%Y-%m-%dT%H:%M:%S.%f')
-                    kwargs[key] = self.updated_at
-#            if not hasattr(self, 'id'):
- #               self.id=str(uuid.uuid4())
-
-
-        """if not kwargs:
+        if not kwargs:
             from models import storage
             self.id = str(uuid.uuid4())
             self.created_at = self.updated_at = datetime.utcnow()
@@ -59,7 +38,7 @@ class BaseModel:
                                                 '%Y-%m-%dT%H:%M:%S.%f')
             if not hasattr(self, 'id'):
                 self.id = str(uuid.uuid4())
-"""
+
     def __str__(self):
         """
         Returns a string representation of the instance
