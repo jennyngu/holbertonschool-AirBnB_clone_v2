@@ -5,8 +5,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
-Base = declarative_base()
-
 
 class Amenity(BaseModel, Base):
     __tablename__ = 'amenities'
