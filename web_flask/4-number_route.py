@@ -2,7 +2,7 @@
 """
 A script that starts a Flask web application
 """
-from flask import Flask
+from flask import Flask, abort
 from sys import argv
 
 app = Flask(__name__)
@@ -32,8 +32,10 @@ def display_py(text):
 @app.route("/number/<n>", strict_slashes=False)
 def display_num(n):
     if n.isdigit():
+        n = int(n)
         return f"{n} is a number"
-    return
+    if not n.isdigit():
+        abort(404)
 
 
 if __name__ == '__main__':
