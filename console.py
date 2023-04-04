@@ -139,14 +139,14 @@ class HBNBCommand(cmd.Cmd):
                 key, value = param.split('=', 1)
 
                 if value.startswith('"') and value.endswith('"'):
-                    value = value.replace('_', ' ')
+                    value = value[1:-1].replace('_', ' ')
                 else:
                     try:
                         value = int(value)
                     except ValueError:
                         try:
                             value = float(value)
-                        except:
+                        except Exception:
                             continue
 
                 setattr(new_instance, key, value)
@@ -154,7 +154,6 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
         print(new_instance.id)
         storage.save()
-
 
     def help_create(self):
         """ Help information for the create method """

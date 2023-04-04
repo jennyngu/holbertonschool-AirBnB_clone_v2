@@ -7,7 +7,6 @@ from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, DateTime
 
-
 Base = declarative_base()
 
 
@@ -33,11 +32,12 @@ class BaseModel:
                 if k != '__class__':
                     setattr(self, k, v)
             self.created_at = datetime.strptime(self.created_at,
-                                                 '%Y-%m-%dT%H:%M:%S.%f')
+                                                '%Y-%m-%dT%H:%M:%S.%f')
             self.updated_at = datetime.strptime(self.updated_at,
-                                                 '%Y-%m-%dT%H:%M:%S.%f')
+                                                '%Y-%m-%dT%H:%M:%S.%f')
             if not hasattr(self, 'id'):
                 self.id = str(uuid.uuid4())
+
 
     def __str__(self):
         """
@@ -72,5 +72,5 @@ class BaseModel:
         Deletes the current instance from the storage
         """
         from models import storage
-        storage.delete(self)
 
+        storage.delete(self)
