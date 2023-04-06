@@ -13,13 +13,14 @@ class State(BaseModel, Base):
     name = Column(String(128), nullable=False)
     cities = relationship('City', backref='state', cascade='all, delete')
 
-    @property
-    def cities(self):
-        """getter attribute to return list of City instances"""
-        from models import storage
-        from models.city import City
-        cities_list = []
-        for city in storage.all(City).values():
-            if city.state_id == self.id:
-                cities_list.append(city)
-        return cities_list
+    if storage_type != 'db':
+        @property
+        def cities(self):
+            """getter attribute to return list of City instances"""
+            from models import storage
+            from models.city import City
+            cities_list = []
+            for city in storage.all(City).values():
+                if city.state_id == self.id:
+                    cities_list.append(city)
+            return cities_list
